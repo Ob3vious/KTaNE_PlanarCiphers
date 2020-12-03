@@ -46,13 +46,11 @@ public class mechanusCipherScript : MonoBehaviour {
 			if (!solved)
 			{
 				if (pos < 14)
-				{
 					StartCoroutine(TotalFlip(pos));
-				}
 				else
 				{
 					string alphabet = "abcdefghijklmnopqrstuvwxyz";
-					if (input.Length <= 7)
+					if (input.Length < 7 && !isanimating[0])
 					{
 						if (input.Length != 7)
 							input += alphabet[gearpos];
@@ -80,53 +78,36 @@ public class mechanusCipherScript : MonoBehaviour {
 		};
 	}
 
-	// Use this for initialization
 	void Awake () {
 		_moduleID = _moduleIdCounter++;
 
 		for (int i = 0; i < Button.Length; i++)
-		{
 			Button[i].OnInteract += PanelPressed(i);
-		}
 		for (int i = 0; i < Gears.Length; i++)
-		{
 			Gears[i].OnInteract += GearPressed(i);
-		}
-		for (int i = 0; i < 3; i++)
-		{
+		for (int i = 0; i < words.Length; i++)
 			words[i] = Wordlist.wordlist[Rnd.Range(0, Wordlist.wordlist.Length)];
-		}
 		for (int i = 0; i < 7; i++)
 		{
 			swaps += Rnd.Range(1, 8).ToString();
 			string x = swaps[i * 2].ToString();
 			while (x == swaps[i * 2].ToString())
-			{
 				x = Rnd.Range(1, 8).ToString();
-			}
 			swaps += x;
 		}
 		MechanusEncrypt(words[0], words[1], words[2], swaps);
 		string swaps2 = "";
 		for (int i = 0; i < 7; i++)
-		{
 			swaps2 += swaps[i * 2];
-		}
 		for (int i = 0; i < 7; i++)
-		{
 			swaps2 += swaps[i * 2 + 1];
-		}
 		swaps = swaps2;
 		displays1 = new string[] { encrypted, words[1], binaries };
 		displays2 = new string[] { swaps.Substring(0, 7), swaps.Substring(7, 7), words[2] };
 		for (int i = 0; i < 7; i++)
-		{
 			Text[i * 2 + 26].text = displays1[0][i].ToString().ToUpperInvariant();
-		}
 		for (int i = 0; i < 7; i++)
-		{
 			Text[i * 2 + 40].text = displays2[0][i].ToString().ToUpperInvariant();
-		}
 		Text[55].text = keyletter.ToString().ToUpperInvariant();
 	}
 
@@ -146,12 +127,8 @@ public class mechanusCipherScript : MonoBehaviour {
 		{
 			int k = 0;
 			for (int l = 0; l < 26; l++)
-			{
 				if (alphabet[l] == keyword[j])
-				{
 					k = l;
-				}
-			}
 			while (key.Contains(alphabet[k]))
 			{
 				k++; k %= 26;
@@ -168,13 +145,9 @@ public class mechanusCipherScript : MonoBehaviour {
 			for (int l = 0; l < 26; l++)
 			{
 				if (key[l] == keyword2[i])
-				{
 					k[0] = l;
-				}
 				if (key[l] == word[i])
-				{
 					k[1] = l;
-				}
 			}
 			j = 1;
 			int p = 0;
@@ -195,12 +168,8 @@ public class mechanusCipherScript : MonoBehaviour {
 		int[,] binary = new int[4,7];
 		int x = Rnd.Range(0, 16);
 		for (int i = 0; i < 26; i++)
-		{
 			if (word[6] == key[i])
-			{
 				j = i;
-			}
-		}
 		int fact = 8;
 		for (int i = 0; i < 4; i++)
 		{
@@ -245,9 +214,7 @@ public class mechanusCipherScript : MonoBehaviour {
 				safe++;
 			}
 			if (Rnd.Range(0, 2) == 1 && safe <= 10 && i != 6)
-			{
 				j = (j + 16) % 26;
-			}
 			encryption = key[j] + encryption;
 		}
 		int safe2 = 0;
@@ -258,15 +225,11 @@ public class mechanusCipherScript : MonoBehaviour {
 			safe2++;
 		}
 		if (Rnd.Range(0, 2) == 1 && safe2 <= 10)
-		{
 			j = (j + 16) % 26;
-		}
 		keyletter = key[j];
 		string binarylog = "";
 		for (int i = 0; i < 28; i++)
-		{
 			binarylog += binary[i / 7, i % 7].ToString();
-		}
 		Debug.Log(binarylog);
 		Debug.LogFormat("[Mechanus Cipher #{0}] Encryption of step 2 results in binary string {1}, key letter {2}, and encrypted word {3}.", _moduleID, binaries, keyletter.ToString().ToUpperInvariant(), encryption.ToUpperInvariant());
 
@@ -278,17 +241,11 @@ public class mechanusCipherScript : MonoBehaviour {
 			int a = int.Parse(swappos[i * 2].ToString()) - 1;
 			int b = int.Parse(swappos[i * 2 + 1].ToString()) - 1;
 			for (int l = 0; l < (new int[] { a, b }).Min(); l++)
-			{
 				encryption += word[l];
-			}
 			for (int l = (new int[] { a, b }).Max(); l >= (new int[] { a, b }).Min(); l--)
-			{
 				encryption += word[l];
-			}
 			for (int l = (new int[] { a, b }).Max() + 1; l < 7; l++)
-			{
 				encryption += word[l];
-			}
 			encrypted = encryption;
 		}
 		Debug.LogFormat("[Mechanus Cipher #{0}] Encryption of step 1 using swapping key {1} (interpret as pairs) results in {2}.", _moduleID, swappos, encrypted.ToUpperInvariant());
@@ -309,9 +266,7 @@ public class mechanusCipherScript : MonoBehaviour {
 			eyerots[0] += 5f;
 			eyerots[1] -= 5f;
 			for (int j = 0; j < 2; j++)
-			{
 				Eyelids[j].transform.localEulerAngles = new Vector3(eyerots[j], 0f, 0f);
-			}
 			yield return new WaitForSeconds(0.03f);
 		}
 		Module.HandlePass();
@@ -388,9 +343,7 @@ public class mechanusCipherScript : MonoBehaviour {
 	private IEnumerator TurnGears(bool forward)
 	{
 		if (remaining == done)
-		{
 			Audio.PlaySoundAtTransform("GearClink", Module.transform);
-		}
 		if (forward)
 		{
 			remaining++;
@@ -409,9 +362,7 @@ public class mechanusCipherScript : MonoBehaviour {
 				Text[i].color = new Color32(63, 35, 0, 255);
 		}
 		while (isanimating[2])
-		{
 			yield return null;
-		}
 		if (forward && remaining > done || !forward && remaining < done)
 		{
 			if (forward)
@@ -432,16 +383,12 @@ public class mechanusCipherScript : MonoBehaviour {
 					gearrotations[1] -= (360f / 13f) / 18f;
 				}
 				for (int j = 0; j < 2; j++)
-				{
 					Gears[j].transform.localEulerAngles = new Vector3(-90f, gearrotations[j], 0f);
-				}
 				yield return new WaitForSeconds(0.03f);
 			}
 			isanimating[2] = false;
 			if (!(forward && remaining > done || !forward && remaining < done))
-			{
 				Audio.PlaySoundAtTransform("GearClink", Module.transform);
-			}
 		}
 	}
 
@@ -450,9 +397,7 @@ public class mechanusCipherScript : MonoBehaviour {
 		if (pos < 7)
 		{
 			while (isanimating[0])
-			{
 				yield return null;
-			}
 			isanimating[0] = true;
 			wordindex[0] = (wordindex[0] + 1) % 3;
 			backside[0] = !backside[0];
@@ -461,14 +406,10 @@ public class mechanusCipherScript : MonoBehaviour {
 				int inplen = input.Length;
 				input = "       ";
 				for (int i = 0; i < 7; i++)
-				{
+				{ 
 					for (int j = 0; j < 7; j++)
-					{
 						if ((j - i == pos || j + i == pos) && j < inplen)
-						{
 							StartCoroutine(FlipPanel(j, true));
-						}
-					}
 					yield return new WaitForSeconds(0.06f);
 				}
 				input = "";
@@ -480,12 +421,8 @@ public class mechanusCipherScript : MonoBehaviour {
 				for (int i = 0; i < 7; i++)
 				{
 					for (int j = 0; j < 7; j++)
-					{
 						if (j - i == pos || j + i == pos)
-						{
 							StartCoroutine(FlipPanel(j, false));
-						}
-					}
 					yield return new WaitForSeconds(0.06f);
 				}
 				yield return new WaitForSeconds(0.6f);
@@ -495,21 +432,15 @@ public class mechanusCipherScript : MonoBehaviour {
 		else if (pos < 14)
 		{
 			while (isanimating[1])
-			{
 				yield return null;
-			}
 			isanimating[1] = true;
 			backside[1] = !backside[1];
 			wordindex[1] = (wordindex[1] + 1) % 3;
 			for (int i = 0; i < 7; i++)
 			{
 				for (int j = 7; j < 14; j++)
-				{
 					if (j - i == pos || j + i == pos)
-					{
 						StartCoroutine(FlipPanel(j, false));
-					}
-				}
 				yield return new WaitForSeconds(0.06f);
 			}
 			yield return new WaitForSeconds(0.6f);
@@ -518,14 +449,13 @@ public class mechanusCipherScript : MonoBehaviour {
 	}
 
 #pragma warning disable 414
-	private string TwitchHelpMessage = "'!{0} cycle' to activate the module, '!{0} submit ENTRIES' to submit ENTRIES.";
+	private string TwitchHelpMessage = "'!{0} cycle' to cycle the screens, '!{0} submit ENTRIES' to submit ENTRIES.";
 #pragma warning restore 414
 	IEnumerator ProcessTwitchCommand(string command)
 	{
 		yield return null;
 		command = command.ToLowerInvariant();
 		if (command == "cycle")
-		{
 			for (int i = 0; i < 3; i++)
 			{
 				Button[0].OnInteract();
@@ -533,46 +463,37 @@ public class mechanusCipherScript : MonoBehaviour {
 				Button[7].OnInteract();
 				yield return new WaitForSeconds(5f);
 			}
-		}
 		else if (command.Split(' ').Length == 2 && command.Split(' ')[1].Length == 7 && command.Split(' ')[0] == "submit")
 		{
 			command = command.Split(' ')[1];
 			string alphabet = "abcdefghijklmnopqrstuvwxyz";
 			for (int i = 0; i < 7; i++)
-			{
 				if (!alphabet.Contains(command[i]))
 				{
 					yield return "sendtochaterror Invalid command.";
 					yield break;
 				}
-			}
 			for (int i = 0; i < 7; i++)
 			{
 				for (int j = 0; j < 26; j++)
-				{
 					if (command[i] == alphabet[(gearpos + j) % 26])
 					{
 						if (j > 13)
-						{
 							while (alphabet[gearpos] != command[i])
 							{
 								Gears[0].OnInteract();
-								yield return new WaitForSeconds(0.1f);
+								yield return null;
 							}
-						}
 						else
-						{
 							while (alphabet[gearpos] != command[i])
 							{
 								Gears[1].OnInteract();
-								yield return new WaitForSeconds(0.1f);
+								yield return null;
 							}
-						}
 						j = 26;
 					}
-				}
 				Button[14].OnInteract();
-				yield return new WaitForSeconds(0.1f);
+				yield return null;
 			}
 			yield return "solve";
 		}
@@ -590,28 +511,22 @@ public class mechanusCipherScript : MonoBehaviour {
 			for (int i = 0; i < 7; i++)
 			{
 				for (int j = 0; j < 26; j++)
-				{
 					if (words[0].ToLowerInvariant()[i] == alphabet[(gearpos + j) % 26])
 					{
 						if (j > 13)
-						{
 							while (alphabet[gearpos] != words[0].ToLowerInvariant()[i])
 							{
 								Gears[0].OnInteract();
 								yield return null;
 							}
-						}
 						else
-						{
 							while (alphabet[gearpos] != words[0].ToLowerInvariant()[i])
 							{
 								Gears[1].OnInteract();
 								yield return null;
 							}
-						}
 						j = 26;
 					}
-				}
 				Button[14].OnInteract();
 				yield return true;
 			}

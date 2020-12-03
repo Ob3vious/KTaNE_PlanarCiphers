@@ -16,8 +16,8 @@ MonoBehaviour:
   author: Obvious
   description: So... you know those planes of existence from DnD? Well... I'm giving
     them all ciphers. Custom ciphers! Since there are 16 outer planes I'll need atleast
-    45 more custom ciphers for this series. DM me suggestions if you have any. For
-    now, enjoy Mechanus Cipher :)
-  version: 1.2
+    42 more custom ciphers for this series. DM me suggestions if you have any. For
+    now, enjoy Mechanus and Pandemonium Cipher :)
+  version: 2.0
   outputFolder: build
-  previewImage: {fileID: 2800000, guid: ecb3d017cb3f1f44cb128212e06f44df, type: 3}
+  previewImage: {fileID: 2800000, guid: 2a7b560e9cbbf9e4baf341ee28d4be3d, type: 3}
