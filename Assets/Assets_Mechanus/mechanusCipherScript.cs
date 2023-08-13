@@ -449,21 +449,44 @@ public class mechanusCipherScript : MonoBehaviour {
 	}
 
 #pragma warning disable 414
-	private string TwitchHelpMessage = "'!{0} cycle' to cycle the screens, '!{0} submit ENTRIES' to submit ENTRIES.";
+	private string TwitchHelpMessage = "'!{0} cycle' to cycle the screens, '!{0} toggle [1,2,both]' to toggle screens, '!{0} submit ENTRIES' to submit ENTRIES.";
 #pragma warning restore 414
 	IEnumerator ProcessTwitchCommand(string command)
 	{
 		yield return null;
 		command = command.ToLowerInvariant();
-		if (command == "cycle")
-			for (int i = 0; i < 3; i++)
-			{
+
+		switch (command)
+		{
+			case "toggle 1":
 				Button[0].OnInteract();
 				yield return null;
-				Button[7].OnInteract();
-				yield return new WaitForSeconds(5f);
-			}
-		else if (command.Split(' ').Length == 2 && command.Split(' ')[1].Length == 7 && command.Split(' ')[0] == "submit")
+				break;
+
+			case "toggle 2":
+				Button[1].OnInteract();
+				yield return null;
+				break;
+
+			case "toggle both":
+				Button[0].OnInteract();
+				yield return null;
+				Button[1].OnInteract();
+				yield return null;
+				break;
+
+			case "cycle":
+				for (int i = 0; i < 2; i++)
+				{
+					Button[0].OnInteract();
+					yield return null;
+					Button[1].OnInteract();
+					yield return new WaitForSeconds(5f);
+				}
+				break;
+        }
+
+        if (command.Split(' ').Length == 2 && command.Split(' ')[1].Length == 7 && command.Split(' ')[0] == "submit")
 		{
 			command = command.Split(' ')[1];
 			string alphabet = "abcdefghijklmnopqrstuvwxyz";
@@ -497,8 +520,6 @@ public class mechanusCipherScript : MonoBehaviour {
 			}
 			yield return "solve";
 		}
-		else
-			yield return "sendtochaterror Invalid command.";
 		yield return null;
 	}
 
