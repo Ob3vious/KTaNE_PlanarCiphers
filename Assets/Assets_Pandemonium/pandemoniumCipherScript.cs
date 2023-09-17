@@ -250,8 +250,18 @@ public class pandemoniumCipherScript : MonoBehaviour {
 		StartCoroutine(Cycle(0));
 	}
 
+	private IEnumerator HandleCycle()
+	{
+        for (int i = 0; i < 2; i++)
+        {
+            yield return new WaitForSeconds(5f);
+            Button[0].OnInteract();
+            Button[1].OnInteract();
+        }
+    }
+
 #pragma warning disable 414
-	private string TwitchHelpMessage = "'!{0} cycle' to cycle the screens, '!{0} submit ENTRIES' to submit ENTRIES. Keep in mind to replace any 'X'.";
+	private string TwitchHelpMessage = "'!{0} cycle/cyclefocus' to cycle the screens, '!{0} submit ENTRIES' to submit ENTRIES. Keep in mind to replace any 'X'.";
 #pragma warning restore 414
 	IEnumerator ProcessTwitchCommand(string command)
 	{
@@ -259,15 +269,13 @@ public class pandemoniumCipherScript : MonoBehaviour {
 		command = command.ToLowerInvariant();
 		if (command == "cycle")
 		{
-			for (int i = 0; i < 2; i++)
-			{
-				Button[0].OnInteract();
-				yield return null;
-				Button[1].OnInteract();
-				yield return new WaitForSeconds(5f);
-			}
+			StartCoroutine(HandleCycle());
 		}
-		else if (command.Split(' ').Length == 2 && command.Split(' ')[1].Length == 7 && command.Split(' ')[0] == "submit")
+		else if (command == "cyclefocus")
+        {
+			yield return HandleCycle();
+        }
+        else if (command.Split(' ').Length == 2 && command.Split(' ')[1].Length == 7 && command.Split(' ')[0] == "submit")
 		{
 			command = command.Split(' ')[1];
 			string alphabet = "abcdefghijklmnopqrstuvwyz";
